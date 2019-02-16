@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <!-- import CSS -->
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <div id="app">
+        <div>
+            <h1>Percent</h1>
+            <ul>
+                <li>CPU:{{ info.Percent.CPU | toFix2 }}%</li>
+                <li>Memory:{{ info.Percent.Mem | toFix2 }}%</li>
+                <li>Swap:{{ info.Percent.Swap | toFix2 }}%</li>
+                <li>Disk:{{ info.Percent.Disk | toFix2 }}%</li>
+            </ul>
+        </div>
+    </div>
+</body>
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+<script>
+    let toFixed = (input, num) => Number(input).toFixed(num)
+    vm = new Vue({
+        el: '#app',
+        data: function () {
+            return {
+                info: {
+                    "Percent": {
+                        "CPU": 0,
+                        "Disk": 0,
+                        "Mem": 0,
+                        "Swap": 0
+                    },
+                    "CPU": [
+                        { "ModelName": "CPU Model", "Cores": 0 }
+                    ],
+                    "Mem": {
+                        "Total": 0,
+                        "Used": 0,
+                        "Available": 0
+                    },
+                    "Swap": {
+                        "Total": 0,
+                        "Used": 0,
+                        "Available": 0
+                    },
+                    "Load": {
+                        "load1": 0,
+                        "load5": 0,
+                        "load15": 0
+                    },
+                    "Network": {
+                        "Interface Name": {
+                            "Addrs": ["IP address"],
+                            "ByteSent": 0,
+                            "ByteRecv": 0,
+                            "SentSpeed": 0,
+                            "RecvSpeed": 0
+                        }
+                    },
+                    "BootTime": 0,
+                    "Uptime": 0
+                },
+                refreshIntervalId: 0
+            };
+        },
+        filters: {
+            toFix2: function (value){
+                return Number(value).toFixed(2);
+            },
+        },
+        created() {
+            this.fetchServerStatus()
+            this.refreshIntervalId = setInterval(() => {
+                this.fetchServerStatus()
+            }, 1500)
+        },
+        beforeDestroy() {
+            clearInterval(this.refreshIntervalId)
+        },
+        methods: {
+            fetchServerStatus: function () {
+                this.$http.get('/info').then((response) => {
+                    this.info = response.body;
+                });
+            }
+        }
+    })
+</script>
+
+</html>
