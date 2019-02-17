@@ -4,26 +4,127 @@
 <head>
     <meta charset="UTF-8">
     <!-- import CSS -->
-    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <style>
+        .text {
+            font-size: 14px;
+        }
+
+        .item {
+            margin-bottom: 5px;
+        }
+
+        .clearfix:before,
+        .clearfix:after {
+            display: table;
+            content: "";
+        }
+
+        .clearfix:after {
+            clear: both
+        }
+
+        .box-card {
+            width: 99%;
+        }
+
+        .el-row {
+            margin-bottom: 10px;
+        }
+
+        .el-col {
+            border-radius: 4px;
+        }
+
+        .card-right {
+            float: right;
+            padding: 3px 0
+        }
+
+        .ip-box {
+            padding-left: 3px;
+            padding-right: 3px;
+            display: inline;
+        }
+
+        .ip-box-item {
+            margin-left: 3px;
+            margin-right: 3px;
+        }
+    </style>
 </head>
 
 <body>
     <div id="app">
-        <div>
-            <h1>Percent</h1>
-            <ul>
-                <li>CPU:{{ info.Percent.CPU | toFix2 }}%</li>
-                <li>Memory:{{ info.Percent.Mem | toFix2 }}%</li>
-                <li>Swap:{{ info.Percent.Swap | toFix2 }}%</li>
-                <li>Disk:{{ info.Percent.Disk | toFix2 }}%</li>
-            </ul>
-        </div>
+        <el-row :gutter="20">
+            <el-col :span="12">
+                <el-card class="box-card" shadow="always">
+                    <div slot="header" class="clearfix">
+                        <span>CPU</span>
+                        <span class="card-right">{{info.CPU[0].ModelName}} ({{info.CPU[0].Cores}}
+                            Cores)</span>
+                    </div>
+                    <div class="item">
+                        <canvas id="smoothie-chart-cpu" style="width:100%; height:200px">
+                    </div>
+                </el-card>
+            </el-col>
+            <el-col :span="12">
+                <el-card class="box-card" shadow="always">
+                    <div slot="header" class="clearfix">
+                        <span>Load</span>
+                        <span class="card-right">
+                            <span>Load1: {{info.Load.load1}}</span>
+                            <span>Load5: {{info.Load.load5}}</span>
+                            <span>Load15: {{info.Load.load15}}</span>
+                        </span>
+                    </div>
+                    <div class="item">
+                        <canvas id="smoothie-chart-load" style="width:100%; height:200px">
+                    </div>
+                </el-card>
+            </el-col>
+
+        </el-row>
+        <el-row :gutter="20">
+            <el-col :span="12">
+                <el-card class="box-card" shadow="always">
+                    <div slot="header" class="clearfix">
+                        <span>Mem</span>
+                        <span class="card-right">
+                            <span>Total: {{info.Mem.Total | prettyBytes}}</span>
+                            <span>Used: {{info.Mem.Used | prettyBytes}}</span>
+                            <span>Available: {{info.Mem.Available | prettyBytes}}</span></span>
+                    </div>
+                    <div class="item">
+                        <canvas id="smoothie-chart-mem" style="width:100%; height:200px">
+                    </div>
+                </el-card>
+            </el-col>
+            <el-col :span="12">
+                <el-card class="box-card" shadow="always">
+                    <div slot="header" class="clearfix">
+                        <span>Swap</span>
+                        <span class="card-right">
+                            <span>Total: {{info.Swap.Total | prettyBytes}}</span>
+                            <span>Used: {{info.Swap.Used | prettyBytes}}</span>
+                            <span>{{info.Swap.Available | prettyBytes}}</span>
+                        </span>
+                    </div>
+                    <div class="item">
+                        <canvas id="smoothie-chart-swap" style="width:100%; height:200px">
+                    </div>
+                </el-card>
+            </el-col>
+        </el-row>  
     </div>
 </body>
 <script src="https://unpkg.com/vue/dist/vue.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/smoothie/1.34.0/smoothie.min.js" integrity="sha256-s4pCizM36ibu/qMLSJHZLwhA5sV0/Jn1J/1TrzryEKQ="
+    crossorigin="anonymous"></script>
 <script>
-    let toFixed = (input, num) => Number(input).toFixed(num)
     vm = new Vue({
         el: '#app',
         data: function () {
@@ -65,13 +166,42 @@
                     "BootTime": 0,
                     "Uptime": 0
                 },
-                refreshIntervalId: 0
+                refreshIntervalId: 0,
+                tsCPU: new TimeSeries(),
+                tsMem: new TimeSeries(),
+                tsSwap: new TimeSeries(),
+                tsLoad1: new TimeSeries(),
+                tsLoad5: new TimeSeries(),
+                tsLoad15: new TimeSeries(),
             };
         },
         filters: {
-            toFix2: function (value){
+            toFix2: function (value) {
                 return Number(value).toFixed(2);
             },
+            toRound: function (value) {
+                return Math.round(value);
+            },
+            prettyBytes: function (num) {
+                // jacked from: https://github.com/sindresorhus/pretty-bytes
+                if (typeof num !== 'number' || isNaN(num)) {
+                    throw new TypeError('Expected a number');
+                }
+                var exponent;
+                var unit;
+                var neg = num < 0;
+                var units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+                if (neg) {
+                    num = -num;
+                }
+                if (num < 1) {
+                    return (neg ? '-' : '') + num + ' B';
+                }
+                exponent = Math.min(Math.floor(Math.log(num) / Math.log(1000)), units.length - 1);
+                num = (num / Math.pow(1000, exponent)).toFixed(2) * 1;
+                unit = units[exponent];
+                return (neg ? '-' : '') + num + ' ' + unit;
+            }
         },
         created() {
             this.fetchServerStatus()
@@ -82,10 +212,33 @@
         beforeDestroy() {
             clearInterval(this.refreshIntervalId)
         },
+        mounted() {
+            var chartCPU = new SmoothieChart({ responsive: true, maxValue: 100, minValue: 0 });
+            chartCPU.addTimeSeries(this.tsCPU, { strokeStyle: 'rgba(0, 255, 0, 1)', fillStyle: 'rgba(0, 255, 0, 0.2)', lineWidth: 4 });
+            chartCPU.streamTo(document.getElementById("smoothie-chart-cpu"), 1500);
+            var chartLoad = new SmoothieChart({ responsive: true, minValue: 0 });
+            chartLoad.addTimeSeries(this.tsLoad1, { strokeStyle: 'rgba(0, 255, 0, 1)', fillStyle: 'rgba(0, 255, 0, 0.2)', lineWidth: 4 });
+            chartLoad.addTimeSeries(this.tsLoad5, { strokeStyle: 'rgba(255, 0, 1)', fillStyle: 'rgba(255, 0, 0, 0.2)', lineWidth: 4 });
+            chartLoad.addTimeSeries(this.tsLoad15, { strokeStyle: 'rgba(0, 0, 255, 1)', fillStyle: 'rgba(0, 0, 255, 0.2)', lineWidth: 4 });
+            chartLoad.streamTo(document.getElementById("smoothie-chart-load"), 1500);
+            var chartMem = new SmoothieChart({ responsive: true, maxValue: 100, minValue: 0 });
+            chartMem.addTimeSeries(this.tsMem, { strokeStyle: 'rgba(0, 255, 0, 1)', fillStyle: 'rgba(0, 255, 0, 0.2)', lineWidth: 4 });
+            chartMem.streamTo(document.getElementById("smoothie-chart-mem"), 1500);
+            var chartSwap = new SmoothieChart({ responsive: true, maxValue: 100, minValue: 0 });
+            chartSwap.addTimeSeries(this.tsSwap, { strokeStyle: 'rgba(0, 255, 0, 1)', fillStyle: 'rgba(0, 255, 0, 0.2)', lineWidth: 4 });
+            chartSwap.streamTo(document.getElementById("smoothie-chart-swap"), 1500);
+        },
         methods: {
             fetchServerStatus: function () {
                 this.$http.get('/info').then((response) => {
                     this.info = response.body;
+                    t = new Date().getTime();
+                    this.tsCPU.append(t, this.info.Percent.CPU);
+                    this.tsMem.append(t, this.info.Percent.Mem);
+                    this.tsSwap.append(t, this.info.Percent.Swap);
+                    this.tsLoad1.append(t, this.info.Load.load1);
+                    this.tsLoad5.append(t, this.info.Load.load5);
+                    this.tsLoad15.append(t, this.info.Load.load15);
                 });
             }
         }
