@@ -25,15 +25,8 @@
         }
 
         .box-card {
-            width: 99%;
-        }
-
-        .el-row {
+            width: 100%;
             margin-bottom: 10px;
-        }
-
-        .el-col {
-            border-radius: 4px;
         }
 
         .card-right {
@@ -41,13 +34,13 @@
             padding: 3px 0
         }
 
-        .ip-box {
+        .tag-box {
             padding-left: 3px;
             padding-right: 3px;
             display: inline;
         }
 
-        .ip-box-item {
+        .tag-box-item {
             margin-left: 3px;
             margin-right: 3px;
         }
@@ -56,67 +49,93 @@
 
 <body>
     <div id="app">
-        <el-row :gutter="20">
-            <el-col :span="12">
-                <el-card class="box-card" shadow="always">
-                    <div slot="header" class="clearfix">
-                        <span>CPU</span>
-                        <span class="card-right">{{info.CPU[0].ModelName}} ({{info.CPU[0].Cores}}
-                            Cores)</span>
-                    </div>
-                    <div class="item">
-                        <canvas id="smoothie-chart-cpu" style="width:100%; height:200px">
-                    </div>
-                </el-card>
-            </el-col>
-            <el-col :span="12">
-                <el-card class="box-card" shadow="always">
-                    <div slot="header" class="clearfix">
-                        <span>Load</span>
-                        <span class="card-right">
-                            <span>Load1: {{info.Load.load1}}</span>
-                            <span>Load5: {{info.Load.load5}}</span>
-                            <span>Load15: {{info.Load.load15}}</span>
-                        </span>
-                    </div>
-                    <div class="item">
-                        <canvas id="smoothie-chart-load" style="width:100%; height:200px">
-                    </div>
-                </el-card>
-            </el-col>
+        <el-card class="box-card" shadow="always">
+            <div slot="header" class="clearfix">
+                <span>CPU</span>
+                <span class="tag-box card-right">
+                    <el-tag type="info" class="tag-box-item">{{info.CPU[0].ModelName}}</el-tag>
+                    <el-tag type="info" class="tag-box-item">{{info.CPU[0].Cores}} Cores</el-tag>
+                </span>
+            </div>
+            <div class="item">
+                <canvas id="smoothie-chart-cpu" style="width:100%; height:200px">
+            </div>
+        </el-card>
+        <el-card class="box-card" shadow="always">
+            <div slot="header" class="clearfix">
+                <span>Load</span>
+                <span class="tag-box card-right">
+                    <el-tag type="info" class="tag-box-item">Load1: {{info.Load.load1}}</el-tag>
+                    <el-tag type="info" class="tag-box-item">Load5: {{info.Load.load5}}</el-tag>
+                    <el-tag type="info" class="tag-box-item">Load15: {{info.Load.load15}}</el-tag>
+                </span>
+            </div>
+            <div class="item">
+                <canvas id="smoothie-chart-load" style="width:100%; height:200px">
+            </div>
+        </el-card>
 
-        </el-row>
-        <el-row :gutter="20">
-            <el-col :span="12">
-                <el-card class="box-card" shadow="always">
-                    <div slot="header" class="clearfix">
-                        <span>Mem</span>
-                        <span class="card-right">
-                            <span>Total: {{info.Mem.Total | prettyBytes}}</span>
-                            <span>Used: {{info.Mem.Used | prettyBytes}}</span>
-                            <span>Available: {{info.Mem.Available | prettyBytes}}</span></span>
-                    </div>
-                    <div class="item">
-                        <canvas id="smoothie-chart-mem" style="width:100%; height:200px">
-                    </div>
-                </el-card>
-            </el-col>
-            <el-col :span="12">
-                <el-card class="box-card" shadow="always">
-                    <div slot="header" class="clearfix">
-                        <span>Swap</span>
-                        <span class="card-right">
-                            <span>Total: {{info.Swap.Total | prettyBytes}}</span>
-                            <span>Used: {{info.Swap.Used | prettyBytes}}</span>
-                            <span>{{info.Swap.Available | prettyBytes}}</span>
-                        </span>
-                    </div>
-                    <div class="item">
-                        <canvas id="smoothie-chart-swap" style="width:100%; height:200px">
-                    </div>
-                </el-card>
-            </el-col>
-        </el-row>  
+
+        <el-card class="box-card" shadow="always">
+            <div slot="header" class="clearfix">
+                <span>Mem</span>
+                <span class="tag-box card-right">
+                    <el-tag type="info" class="tag-box-item">Total: {{info.Mem.Total | prettyBytes}}</el-tag>
+                    <el-tag type="info" class="tag-box-item">Used: {{info.Mem.Used | prettyBytes}}</el-tag>
+                    <el-tag type="info" class="tag-box-item">Available: {{info.Mem.Available | prettyBytes}}</el-tag>
+                </span>
+            </div>
+            <div class="item">
+                <canvas id="smoothie-chart-mem" style="width:100%; height:200px">
+            </div>
+        </el-card>
+
+        <el-card class="box-card" shadow="always">
+            <div slot="header" class="clearfix">
+                <span>Swap</span>
+                <span class="tag-box card-right">
+                    <el-tag type="info" class="tag-box-item">Total: {{info.Swap.Total | prettyBytes}}</el-tag>
+                    <el-tag type="info" class="tag-box-item">Used: {{info.Swap.Used | prettyBytes}}</el-tag>
+                    <el-tag type="info" class="tag-box-item">Available: {{info.Swap.Available | prettyBytes}}</el-tag>
+                </span>
+            </div>
+            <div class="item">
+                <canvas id="smoothie-chart-swap" style="width:100%; height:200px">
+            </div>
+        </el-card>
+
+        <el-card class="box-card" shadow="always">
+            <div slot="header" class="clearfix">
+                <span>Disk</span>
+                <span class="tag-box card-right">
+                    <el-tag type="info" class="tag-box-item">BootTime: {{info.BootTime | localdateformat}}</el-tag>
+                    <el-tag type="info" class="tag-box-item">UpTime: {{info.Uptime | durationstr}}</el-tag>
+                </span>
+            </div>
+            <div class="item">
+                <canvas id="smoothie-chart-disk" style="width:100%; height:200px">
+            </div>
+        </el-card>
+
+        <el-card v-for="(value, key) in info.Network" class="box-card" shadow="always">
+            <div slot="header" class="clearfix">
+                <span>Interface {{key}}</span>
+                <span class="tag-box card-right">
+                    <el-tag type="info" v-for="ip in value.Addrs" class="tag-box-item">{{ip}}</el-tag>
+                    <el-tag class="tag-box-item"><span class="el-icon-upload2"></span> {{value.SentSpeed |
+                        prettyBytes}}/s</el-tag>
+                    <el-tag class="tag-box-item"><span class="el-icon-download"></span> {{value.RecvSpeed |
+                        prettyBytes}}/s</el-tag>
+                    <el-tag type="info" class="tag-box-item"><span class="el-icon-upload2"></span> {{value.ByteSent |
+                        prettyBytes}}</el-tag>
+                    <el-tag type="info" class="tag-box-item"><span class="el-icon-download"></span> {{value.ByteRecv |
+                        prettyBytes}}</el-tag>
+                </span>
+            </div>
+            <div class="item">
+                none
+            </div>
+        </el-card>
     </div>
 </body>
 <script src="https://unpkg.com/vue/dist/vue.js"></script>
@@ -124,6 +143,10 @@
 <script src="https://unpkg.com/element-ui/lib/index.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/smoothie/1.34.0/smoothie.min.js" integrity="sha256-s4pCizM36ibu/qMLSJHZLwhA5sV0/Jn1J/1TrzryEKQ="
     crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment-with-locales.min.js" integrity="sha256-AdQN98MVZs44Eq2yTwtoKufhnU+uZ7v2kXnD5vqzZVo="
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment-duration-format/2.2.2/moment-duration-format.min.js"
+    integrity="sha256-bXC/nhRjq/J7K4hnL8yvthqXkskSKOsZNfrLgXBigYg=" crossorigin="anonymous"></script>
 <script>
     vm = new Vue({
         el: '#app',
@@ -170,6 +193,7 @@
                 tsCPU: new TimeSeries(),
                 tsMem: new TimeSeries(),
                 tsSwap: new TimeSeries(),
+                tsDisk: new TimeSeries(),
                 tsLoad1: new TimeSeries(),
                 tsLoad5: new TimeSeries(),
                 tsLoad15: new TimeSeries(),
@@ -201,6 +225,12 @@
                 num = (num / Math.pow(1000, exponent)).toFixed(2) * 1;
                 unit = units[exponent];
                 return (neg ? '-' : '') + num + ' ' + unit;
+            },
+            localdateformat: function (date) {
+                return moment(date, "X").format('LLL');
+            },
+            durationstr: function (seconds) {
+                return moment.duration(seconds, "seconds").format();
             }
         },
         created() {
@@ -227,6 +257,9 @@
             var chartSwap = new SmoothieChart({ responsive: true, maxValue: 100, minValue: 0 });
             chartSwap.addTimeSeries(this.tsSwap, { strokeStyle: 'rgba(0, 255, 0, 1)', fillStyle: 'rgba(0, 255, 0, 0.2)', lineWidth: 4 });
             chartSwap.streamTo(document.getElementById("smoothie-chart-swap"), 1500);
+            var chartDisk = new SmoothieChart({ responsive: true, maxValue: 100, minValue: 0 });
+            chartDisk.addTimeSeries(this.tsDisk, { strokeStyle: 'rgba(0, 255, 0, 1)', fillStyle: 'rgba(0, 255, 0, 0.2)', lineWidth: 4 });
+            chartDisk.streamTo(document.getElementById("smoothie-chart-disk"), 1500);
         },
         methods: {
             fetchServerStatus: function () {
@@ -236,6 +269,7 @@
                     this.tsCPU.append(t, this.info.Percent.CPU);
                     this.tsMem.append(t, this.info.Percent.Mem);
                     this.tsSwap.append(t, this.info.Percent.Swap);
+                    this.tsDisk.append(t, this.info.Percent.Disk);
                     this.tsLoad1.append(t, this.info.Load.load1);
                     this.tsLoad5.append(t, this.info.Load.load5);
                     this.tsLoad15.append(t, this.info.Load.load15);
