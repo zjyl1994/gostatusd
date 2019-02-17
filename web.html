@@ -53,8 +53,8 @@
             <div slot="header" class="clearfix">
                 <span>CPU</span>
                 <span class="tag-box card-right">
-                    <el-tag type="info" class="tag-box-item">{{info.CPU[0].ModelName}}</el-tag>
-                    <el-tag type="info" class="tag-box-item">{{info.CPU[0].Cores}} Cores</el-tag>
+                    <el-tag type="info" class="tag-box-item">{$info.CPU[0].ModelName$}</el-tag>
+                    <el-tag type="info" class="tag-box-item">{$info.CPU[0].Cores$} Cores</el-tag>
                 </span>
             </div>
             <div class="item">
@@ -65,9 +65,9 @@
             <div slot="header" class="clearfix">
                 <span>Load</span>
                 <span class="tag-box card-right">
-                    <el-tag type="info" class="tag-box-item">Load1: {{info.Load.load1}}</el-tag>
-                    <el-tag type="info" class="tag-box-item">Load5: {{info.Load.load5}}</el-tag>
-                    <el-tag type="info" class="tag-box-item">Load15: {{info.Load.load15}}</el-tag>
+                    <el-tag type="success" class="tag-box-item">Load1: {$info.Load.load1$}</el-tag>
+                    <el-tag type="danger" class="tag-box-item">Load5: {$info.Load.load5$}</el-tag>
+                    <el-tag class="tag-box-item">Load15: {$info.Load.load15$}</el-tag>
                 </span>
             </div>
             <div class="item">
@@ -80,9 +80,9 @@
             <div slot="header" class="clearfix">
                 <span>Mem</span>
                 <span class="tag-box card-right">
-                    <el-tag type="info" class="tag-box-item">Total: {{info.Mem.Total | prettyBytes}}</el-tag>
-                    <el-tag type="info" class="tag-box-item">Used: {{info.Mem.Used | prettyBytes}}</el-tag>
-                    <el-tag type="info" class="tag-box-item">Available: {{info.Mem.Available | prettyBytes}}</el-tag>
+                    <el-tag type="info" class="tag-box-item">Total: {$info.Mem.Total | prettyBytes$}</el-tag>
+                    <el-tag type="info" class="tag-box-item">Used: {$info.Mem.Used | prettyBytes$}</el-tag>
+                    <el-tag type="info" class="tag-box-item">Available: {$info.Mem.Available | prettyBytes$}</el-tag>
                 </span>
             </div>
             <div class="item">
@@ -94,9 +94,9 @@
             <div slot="header" class="clearfix">
                 <span>Swap</span>
                 <span class="tag-box card-right">
-                    <el-tag type="info" class="tag-box-item">Total: {{info.Swap.Total | prettyBytes}}</el-tag>
-                    <el-tag type="info" class="tag-box-item">Used: {{info.Swap.Used | prettyBytes}}</el-tag>
-                    <el-tag type="info" class="tag-box-item">Available: {{info.Swap.Available | prettyBytes}}</el-tag>
+                    <el-tag type="info" class="tag-box-item">Total: {$info.Swap.Total | prettyBytes$}</el-tag>
+                    <el-tag type="info" class="tag-box-item">Used: {$info.Swap.Used | prettyBytes$}</el-tag>
+                    <el-tag type="info" class="tag-box-item">Available: {$info.Swap.Available | prettyBytes$}</el-tag>
                 </span>
             </div>
             <div class="item">
@@ -108,34 +108,35 @@
             <div slot="header" class="clearfix">
                 <span>Disk</span>
                 <span class="tag-box card-right">
-                    <el-tag type="info" class="tag-box-item">BootTime: {{info.BootTime | localdateformat}}</el-tag>
-                    <el-tag type="info" class="tag-box-item">UpTime: {{info.Uptime | durationstr}}</el-tag>
+                    <el-tag type="info" class="tag-box-item">BootTime: {$info.BootTime | localdateformat$}</el-tag>
+                    <el-tag type="info" class="tag-box-item">UpTime: {$info.Uptime | durationstr$}</el-tag>
                 </span>
             </div>
             <div class="item">
                 <canvas id="smoothie-chart-disk" style="width:100%; height:200px">
             </div>
         </el-card>
-
-        <el-card v-for="(value, key) in info.Network" class="box-card" shadow="always">
+        {{range .ifName}}
+        <el-card class="box-card" shadow="always">
             <div slot="header" class="clearfix">
-                <span>Interface {{key}}</span>
+                <span>Interface {{.}}</span>
                 <span class="tag-box card-right">
-                    <el-tag type="info" v-for="ip in value.Addrs" class="tag-box-item">{{ip}}</el-tag>
-                    <el-tag class="tag-box-item"><span class="el-icon-upload2"></span> {{value.SentSpeed |
-                        prettyBytes}}/s</el-tag>
-                    <el-tag class="tag-box-item"><span class="el-icon-download"></span> {{value.RecvSpeed |
-                        prettyBytes}}/s</el-tag>
-                    <el-tag type="info" class="tag-box-item"><span class="el-icon-upload2"></span> {{value.ByteSent |
-                        prettyBytes}}</el-tag>
-                    <el-tag type="info" class="tag-box-item"><span class="el-icon-download"></span> {{value.ByteRecv |
-                        prettyBytes}}</el-tag>
+                    <el-tag type="info" v-for="ip in info.Network.{{.}}.Addrs" class="tag-box-item">{$ip$}</el-tag>
+                    <el-tag class="tag-box-item" type="success"><span class="el-icon-upload2"></span> {$info.Network.{{.}}.SentSpeed |
+                        prettyBytes$}/s</el-tag>
+                    <el-tag class="tag-box-item" type="danger"><span class="el-icon-download"></span> {$info.Network.{{.}}.RecvSpeed |
+                        prettyBytes$}/s</el-tag>
+                    <el-tag type="info" class="tag-box-item"><span class="el-icon-upload2"></span> {$info.Network.{{.}}.ByteSent |
+                        prettyBytes$}</el-tag>
+                    <el-tag type="info" class="tag-box-item"><span class="el-icon-download"></span> {$info.Network.{{.}}.ByteRecv |
+                        prettyBytes$}</el-tag>
                 </span>
             </div>
             <div class="item">
-                none
+                <canvas id="smoothie-chart-interface-{{.}}" style="width:100%; height:200px">
             </div>
         </el-card>
+        {{end}}
     </div>
 </body>
 <script src="https://unpkg.com/vue/dist/vue.js"></script>
@@ -150,45 +151,10 @@
 <script>
     vm = new Vue({
         el: '#app',
+        delimiters: ['{$', '$}'],
         data: function () {
             return {
-                info: {
-                    "Percent": {
-                        "CPU": 0,
-                        "Disk": 0,
-                        "Mem": 0,
-                        "Swap": 0
-                    },
-                    "CPU": [
-                        { "ModelName": "CPU Model", "Cores": 0 }
-                    ],
-                    "Mem": {
-                        "Total": 0,
-                        "Used": 0,
-                        "Available": 0
-                    },
-                    "Swap": {
-                        "Total": 0,
-                        "Used": 0,
-                        "Available": 0
-                    },
-                    "Load": {
-                        "load1": 0,
-                        "load5": 0,
-                        "load15": 0
-                    },
-                    "Network": {
-                        "Interface Name": {
-                            "Addrs": ["IP address"],
-                            "ByteSent": 0,
-                            "ByteRecv": 0,
-                            "SentSpeed": 0,
-                            "RecvSpeed": 0
-                        }
-                    },
-                    "BootTime": 0,
-                    "Uptime": 0
-                },
+                info: {{ .info }},
                 refreshIntervalId: 0,
                 tsCPU: new TimeSeries(),
                 tsMem: new TimeSeries(),
@@ -197,6 +163,10 @@
                 tsLoad1: new TimeSeries(),
                 tsLoad5: new TimeSeries(),
                 tsLoad15: new TimeSeries(),
+                {{range .ifName}}
+                tsInterface{{.}}Outbound: new TimeSeries(),
+                tsInterface{{.}}Inbound: new TimeSeries(),
+                {{end}}
             };
         },
         filters: {
@@ -260,6 +230,12 @@
             var chartDisk = new SmoothieChart({ responsive: true, maxValue: 100, minValue: 0 });
             chartDisk.addTimeSeries(this.tsDisk, { strokeStyle: 'rgba(0, 255, 0, 1)', fillStyle: 'rgba(0, 255, 0, 0.2)', lineWidth: 4 });
             chartDisk.streamTo(document.getElementById("smoothie-chart-disk"), 1500);
+            {{range .ifName}}
+            var chartInterface{{.}} = new SmoothieChart({ responsive: true, minValue: 0 });
+            chartInterface{{.}}.addTimeSeries(this.tsInterface{{.}}Outbound, { strokeStyle: 'rgba(0, 255, 0, 1)', fillStyle: 'rgba(0, 255, 0, 0.2)', lineWidth: 4 });
+            chartInterface{{.}}.addTimeSeries(this.tsInterface{{.}}Inbound, { strokeStyle: 'rgba(255, 0, 0, 1)', fillStyle: 'rgba(255, 0, 0, 0.2)', lineWidth: 4 });
+            chartInterface{{.}}.streamTo(document.getElementById("smoothie-chart-interface-{{.}}"), 1500);
+            {{end}}
         },
         methods: {
             fetchServerStatus: function () {
@@ -273,6 +249,10 @@
                     this.tsLoad1.append(t, this.info.Load.load1);
                     this.tsLoad5.append(t, this.info.Load.load5);
                     this.tsLoad15.append(t, this.info.Load.load15);
+                    {{range .ifName}}
+                    this.tsInterface{{.}}Outbound.append(t, this.info.Network.{{.}}.SentSpeed);
+                    this.tsInterface{{.}}Inbound.append(t, this.info.Network.{{.}}.RecvSpeed);
+                    {{end}}
                 });
             }
         }

@@ -106,3 +106,12 @@ func infoJSON() string {
 	}
 	return string(b)
 }
+
+func getInterfacesNames() []string {
+	i, _ := net.Interfaces()
+	ret := make([]string, len(i))
+	for k, v := range i {
+		ret[k] = v.Name
+	}
+	return ret
+}
