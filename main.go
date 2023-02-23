@@ -1,44 +1,67 @@
 package main
 
 import (
+	"archive/zip"
+	"bytes"
+	_ "embed"
 	"flag"
 	"fmt"
-	"log"
+	"io/ioutil"
 	"net/http"
-	"text/template"
+	"os"
+	"path/filepath"
+
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/filesystem"
 )
 
-var tpl string
+//go:embed web.zip
+var staticZip []byte
+
+var listenAddr string
+var recordFile string
+var themeZip string
 
 func main() {
-	var err error
-	tpl, err = getTemplate()
-	if err != nil {
-		log.Fatalln("Unpack web panel failed", err)
-	}
-	port := flag.String("port", ":58000", "HTTP listen port")
+	flag.StringVar(&listenAddr, "listen", ":9900", "listen address")
+	flag.StringVar(&recordFile, "record", filepath.Join(os.TempDir(), "gostatusd.json"), "monthly traffic record file")
+	flag.StringVar(&themeZip, "theme", "", "custom theme in zip file")
 	flag.Parse()
-	http.HandleFunc("/info", getInfo)
-	http.HandleFunc("/", index)
-	err = http.ListenAndServe(*port, nil)
-	if err != nil {
-		log.Fatalln("ListenAndServe: ", err)
+	// load theme
+	if len(themeZip) > 0 {
+		if zipdata, err := ioutil.ReadFile(themeZip); err != nil {
+			fmt.Fprintln(os.Stderr, err.Error())
+			return
+		} else {
+			staticZip = zipdata
+		}
 	}
+	themeData, err := zip.NewReader(bytes.NewReader(staticZip), int64(len(staticZip)))
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err.Error())
+		return
+	}
+	// init
+	if err := initWorker(); err != nil {
+		fmt.Fprintln(os.Stderr, err.Error())
+		return
+	}
+
+	go backgroundWorker()
+
+	// run web ui
+	app := fiber.New()
+	app.Get("/stat", getNetStatHandler)
+	app.Use("/", filesystem.New(filesystem.Config{
+		Root: http.FS(themeData),
+	}))
+	app.Listen(listenAddr)
 }
 
-func getInfo(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Add("Access-Control-Allow-Headers", "Content-Type")
-	w.Header().Set("Content-Type", "application/json")
-	fmt.Fprintf(w, infoJSON())
-}
-
-func index(w http.ResponseWriter, r *http.Request) {
-	interfaceName := getInterfacesNames()
-	infoString := infoJSON()
-	t := template.Must(template.New("tpl").Parse(tpl))
-	t.ExecuteTemplate(w, "tpl", map[string]interface{}{
-		"ifName": interfaceName,
-		"info":   infoString,
-	})
+func getNetStatHandler(c *fiber.Ctx) error {
+	systemInfo, err := getSystemInfo()
+	if err != nil {
+		return err
+	}
+	return c.JSON(systemInfo)
 }

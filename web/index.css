@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
+
+html,
+body {
+    font-family: 'Ubuntu', sans-serif;
+}
+
+.grey-text {
+    color: gray;
+    font-weight: lighter;
+    width: 30%;
+}
+
+.up-text {
+    color: green;
+    font-weight: bold;
+}
+
+.down-text {
+    color: red;
+    font-weight: bold;
+}
+
+.title {
+    font-weight: bold;
+    font-size: x-large;
+}
+
+td>span+span {
+    margin-left: 0.25em;
+}
+
+.container {
+    margin: 15px 15px 15px 15px;
+}
