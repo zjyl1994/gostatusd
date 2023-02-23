@@ -15,6 +15,8 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
 )
 
+const appName = "Gostatusd"
+
 //go:embed web.zip
 var staticZip []byte
 
@@ -50,7 +52,10 @@ func main() {
 	go backgroundWorker()
 
 	// run web ui
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		ServerHeader: appName,
+		AppName:      appName,
+	})
 	app.Get("/stat", getNetStatHandler)
 	app.Use("/", filesystem.New(filesystem.Config{
 		Root: http.FS(themeData),

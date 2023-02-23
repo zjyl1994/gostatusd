@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en-US">
+<html lang="zh-CN">
 
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gostatusd</title>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="alpine.js"></script>
     <link href="index.css" rel="stylesheet">
 </head>
 
@@ -19,28 +19,28 @@
         <br>
         <table>
             <tr>
-                <td class="grey-text">CPU</td>
+                <td class="grey-text">处理器</td>
                 <td>
                     <span><progress :value="data.percent.cpu.toFixed(2)" max="100"></progress></span>
                     <span x-text="data.percent.cpu.toFixed(2)+'%'"></span>
                 </td>
             </tr>
             <tr>
-                <td class="grey-text">Mem</td>
+                <td class="grey-text">内存</td>
                 <td>
                     <span><progress :value="data.percent.mem.toFixed(2)" max="100"></progress></span>
                     <span x-text="data.percent.mem.toFixed(2)+'%'"></span>
                 </td>
             </tr>
             <tr>
-                <td class="grey-text">Swap</td>
+                <td class="grey-text">交换</td>
                 <td>
                     <span><progress :value="data.percent.swap.toFixed(2)" max="100"></progress></span>
                     <span x-text="data.percent.swap.toFixed(2)+'%'"></span>
                 </td>
             </tr>
             <tr>
-                <td class="grey-text">Disk</td>
+                <td class="grey-text">存储</td>
                 <td>
                     <span><progress :value="data.percent.disk.toFixed(2)" max="100"></progress></span>
                     <span x-text="data.percent.disk.toFixed(2)+'%'"></span>
@@ -48,7 +48,7 @@
             </tr>
 
             <tr>
-                <td class="grey-text">Load</td>
+                <td class="grey-text">负载</td>
                 <td>
                     <span x-text="data.load.load1.toFixed(2)"></span>
                     <span class="grey-text">|</span>
@@ -59,7 +59,7 @@
             </tr>
 
             <tr>
-                <td class="grey-text">Mem</td>
+                <td class="grey-text">内存</td>
                 <td>
                     <span x-text="data.memory.used.formatBytes()"></span>
                     <span class="grey-text">/</span>
@@ -68,7 +68,7 @@
             </tr>
 
             <tr>
-                <td class="grey-text">Swap</td>
+                <td class="grey-text">交换</td>
                 <td>
                     <span x-text="data.swap.used.formatBytes()"></span>
                     <span class="grey-text">/</span>
@@ -77,7 +77,7 @@
             </tr>
 
             <tr>
-                <td class="grey-text">Disk</td>
+                <td class="grey-text">存储</td>
                 <td>
                     <span x-text="data.disk.used.formatBytes()"></span>
                     <span class="grey-text">/</span>
@@ -85,7 +85,7 @@
                 </td>
             </tr>
             <tr>
-                <td class="grey-text"></td>
+                <td class="grey-text">(读写)</td>
                 <td>
                     <span class="up-text">&#11014;</span>
                     <span x-text="data.disk.read.formatBytes()"></span>/s
@@ -95,7 +95,7 @@
             </tr>
 
             <tr>
-                <td class="grey-text">Network</td>
+                <td class="grey-text">网络流量</td>
                 <td>
                     <span class="up-text">&#11014;</span>
                     <span x-text="data.network.tx.formatBytes()"></span>/s
@@ -104,7 +104,7 @@
                 </td>
             </tr>
             <tr>
-                <td class="grey-text">(Monthly)</td>
+                <td class="grey-text">(月流量)</td>
                 <td>
                     <span class="up-text">&#11014;</span>
                     <span x-text="data.network.mout.formatBytes()"></span>
@@ -113,7 +113,7 @@
                 </td>
             </tr>
             <tr>
-                <td class="grey-text">(Total)</td>
+                <td class="grey-text">(总流量)</td>
                 <td>
                     <span class="up-text">&#11014;</span>
                     <span x-text="data.network.out.formatBytes()"></span>
@@ -123,20 +123,20 @@
             </tr>
 
             <tr>
-                <td class="grey-text">Uptime</td>
+                <td class="grey-text">在线时间</td>
                 <td x-text="data.uptime.secondsToHms()"></td>
             </tr>
             <tr>
-                <td class="grey-text">Hostname</td>
+                <td class="grey-text">主机名称</td>
                 <td x-text="data.hostname"></td>
             </tr>
             <tr>
-                <td class="grey-text">Update at</td>
+                <td class="grey-text">更新于</td>
                 <td x-text="updatetime"></td>
             </tr>
         </table>
         <br>
-        <div class="grey-text">Powered By <a href="https://github.com/zjyl1994/gostatusd">Gostatusd</a></div>
+        <div class="grey-text">由 <a href="https://github.com/zjyl1994/gostatusd">Gostatusd</a> 强力驱动</div>
     </div>
     <script src="index.js"></script>
 </body>
