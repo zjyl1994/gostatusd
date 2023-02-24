@@ -58,7 +58,8 @@ func main() {
 	})
 	app.Get("/stat", getNetStatHandler)
 	app.Use("/", filesystem.New(filesystem.Config{
-		Root: http.FS(themeData),
+		Root:   http.FS(themeData),
+		MaxAge: 30 * 24 * 60 * 60, // cache 30 days
 	}))
 	app.Listen(listenAddr)
 }
